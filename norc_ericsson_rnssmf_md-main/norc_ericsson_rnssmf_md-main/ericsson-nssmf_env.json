@@ -1,0 +1,5 @@
+{
+	"ericsson-nssmf_ENDPOINT_HOST": "<ENV_HOST>",
+	"ericsson-nssmf_ENDPOINT_PORT": "<ENV_PORT>",
+	"ericsson-nssmf_ENDPOINT_URI": "<ENV_ENDPOINT>"
+}

@@ -1,0 +1,21 @@
+{
+	"parentObjectRef": "networkElementType/GenericTypeDriver_Type/versions/1/neInterfaceType",
+	"name": "ericsson-nssmf-interface-type",
+	"version": "1",
+	"software": {
+		"fileLocation": "mech-drivers",
+		"fileId": "ericsson-nssmf-1.0.0-SNAPSHOT.jar",
+		"name": "ericsson-nssmf-1.0.0-SNAPSHOT.jar",
+		"version": ""
+	},
+	"implementsInterfaceType": [
+		{
+			"name": "REST",
+			"version": "1",
+			"networkElementType": {
+				"name": "ericsson-nssmf-type",
+				"version": "1"
+			}
+		}
+	]
+}

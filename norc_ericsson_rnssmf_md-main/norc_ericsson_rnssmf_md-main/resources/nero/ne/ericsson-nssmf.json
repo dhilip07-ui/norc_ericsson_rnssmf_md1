@@ -1,0 +1,40 @@
+{
+    "name": "ericsson-nssmf",
+    "version": "1",
+    "tasksMax": 10,
+    "connectionsMax": 50,
+    "category": "Managed",
+    "serviceState": "InService",
+    "pollingIntervalInMills": 30000,
+    "networkElementType": {
+        "name": "ericsson-nssmf-type",
+        "version": "1"
+    },
+    "properties": {
+        "lcm_interface_name": "ericsson-nssmf"
+    },
+    "neInterface": [
+        {
+            "name": "ericsson-nssmf",
+            "address": {
+                "protocol": "http",
+                "host": "${ericsson-nssmf_ENDPOINT_HOST}",
+                "port": "${ericsson-nssmf_ENDPOINT_PORT}",
+                "baseUri": "${ericsson-nssmf_ENDPOINT_URI}"
+            },
+            "connectionRetryMax": 30,
+            "connectionRetrySleep": 30,
+            "connectionDurationMax": 30,
+            "connectionWaitTimeMax": 0,
+            "connectionsMax": 30,
+            "requestIntervalMin": 1,
+            "requestSendDelayMax": 30,
+            "requestResponseTimeMax": 30,
+            "serviceState": "InService",
+            "neInterfaceType": {
+                "name": "REST",
+                "version": "1"
+            }
+        }
+    ]
+}

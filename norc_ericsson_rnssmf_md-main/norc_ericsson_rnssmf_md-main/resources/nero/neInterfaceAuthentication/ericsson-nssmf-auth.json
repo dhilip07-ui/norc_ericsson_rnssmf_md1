@@ -1,0 +1,9 @@
+{
+  "parentObjectRef": "networkElement/ericsson-nssmf/neInterface/ericsson-nssmf/authentication",
+  "@class": "BasicAuth",
+  "alias": "ericsson-nssmf",
+  "tenant": "testTenant",
+  "username": "user",
+  "password": "password",
+  "default": true
+}

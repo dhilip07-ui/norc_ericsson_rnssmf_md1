@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+
+    <artifactId>ericsson-nssmf</artifactId>
+    <groupId>com.nokia.dos.md</groupId>
+    <version>1.0.0-SNAPSHOT</version>
+	<packaging>jar</packaging>
+
+    <properties>
+        <!-- General -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <java.version>11</java.version>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
+        <!-- mechanism-driver-api -->
+      <mechanism-driver-api.version>2.1.1</mechanism-driver-api.version> 
+        <!-- norc-sol-packaging -->
+        <norc-sol-packaging.version>23.9.1554</norc-sol-packaging.version> 
+        <norc-sol-packaging.manifest_file>${project.build.directory}/ne_config/MANIFEST.INF</norc-sol-packaging.manifest_file>
+        <norc-sol-packaging.source_dir>${project.build.directory}</norc-sol-packaging.source_dir>
+        <norc-sol-packaging.add_args></norc-sol-packaging.add_args>
+        <!--Non Nokia dependencies-->
+         <spring-webflux.version>6.0.8</spring-webflux.version>
+        <reactor-netty.version>1.1.5</reactor-netty.version>
+        <reactor-core.version>3.5.4</reactor-core.version>
+        <spring-web.version>6.0.8</spring-web.version>
+        <spring-core.version>6.0.8</spring-core.version>
+        <slf4j-api.version>2.0.0</slf4j-api.version>
+    </properties>
+
+    <dependencies>
+        <!--Nokia dependencies-->
+       
+              <dependency>
+            <groupId>com.nokia.dos</groupId>
+            <artifactId>mechanism-driver-api</artifactId>
+            <version>${mechanism-driver-api.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.nokia.dos</groupId>
+            <artifactId>norc-sol-packaging</artifactId>
+			<version>${norc-sol-packaging.version}</version>
+            <classifier>jar-with-dependencies</classifier>
+        </dependency>
+           <dependency>
+      <groupId>com.nokia.dos</groupId>
+      <artifactId>mechanism-driver-common</artifactId>
+      <version>${mechanism-driver-api.version}</version>
+    </dependency> 
+
+        <!--Non Nokia dependencies-->
+ <dependency>
+    <groupId>javax.validation</groupId>
+    <artifactId>validation-api</artifactId>
+    <version>2.0.1.Final</version>
+</dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webflux</artifactId>
+            <version>${spring-webflux.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.projectreactor.netty</groupId>
+            <artifactId>reactor-netty</artifactId>
+            <version>${reactor-netty.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.projectreactor</groupId>
+            <artifactId>reactor-core</artifactId>
+            <version>${reactor-core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>${spring-web.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>${spring-core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j-api.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- Copying dependency jars into target folder -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.3.0</version>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}</outputDirectory>
+                            <overWriteIfNewer>true</overWriteIfNewer>
+                            <includeArtifactIds>norc-sol-packaging</includeArtifactIds>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- Copying MANIFEST.INF into target directory -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.3.0</version>
+                <executions>
+                    <execution>
+                        <id>copy-resources</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/ne_config</outputDirectory>
+                            <overwrite>true</overwrite>
+                            <resources>
+                                <resource>
+                                    <targetPath>${project.basedir}/target/ne_config</targetPath>
+                                    <directory>${project.basedir}/resources</directory>
+                                    <filtering>true</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- Replacing @PACKAGE_NAME@ and @PACKAGE_VERSION@ token in the MANIFEST file -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>set_manifest_file_name_and_version</id>
+                        <phase>process-resources</phase>
+                        <configuration>
+                            <target name="set_manifest_file_name_and_version">
+                                <replace token="@PACKAGE_NAME@"
+                                         value="${project.artifactId}" dir="${project.build.directory}/ne_config">
+                                    <include name="**/MANIFEST.INF"/>
+                                </replace>
+                                <replace token="@PACKAGE_VERSION@"
+                                         value="${project.version}" dir="${project.build.directory}/ne_config">
+                                    <include name="**/MANIFEST.INF"/>
+                                </replace>
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>copy_env_json_file</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <copy
+                                        overwrite="true"
+                                        file="${project.basedir}/resources/ericsson-nssmf_env.json"
+                                        toFile="${project.basedir}/ericsson-nssmf_env.json"/>
+                            </target>
+                        </configuration>
+                    </execution>
+					<execution>
+                        <id>copy_built_jar_file</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+							<target>
+                                <copy
+                                        overwrite="true"
+                                        file="${project.basedir}/target/ericsson-nssmf-1.0.0-SNAPSHOT.jar"
+                                        toFile="${project.build.directory}/ne_config/mechanism-drivers/ericsson-nssmf-1.0.0-SNAPSHOT.jar"/>
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- Executing norc-sol-packaging-<version>-jar-with-dependencies.jar -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>Run NORC solution packaging tool</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>java</executable>
+                            <commandlineArgs>-jar ${project.build.directory}/norc-sol-packaging-${norc-sol-packaging.version}-jar-with-dependencies.jar -m ${norc-sol-packaging.manifest_file} -s ${norc-sol-packaging.source_dir}/ne_config ${norc-sol-packaging.add_args}</commandlineArgs>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+        </resources>
+    </build>
+</project>

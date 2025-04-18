@@ -1,0 +1,290 @@
+{
+	"info": {
+		"_postman_id": "1e291f3d-c968-497e-a948-ed694d36d514",
+		"name": "SampleOrder",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "18180935"
+	},
+	"item": [
+		{
+			"name": "Onboard Package",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var protocol = pm.environment.get(\"protocol\");\r",
+							"var keycloak_host = pm.environment.get(\"keycloak_host\");\r",
+							"var keycloak_realm = pm.environment.get(\"keycloak_realm\");\r",
+							"var client_id = pm.environment.get(\"client_id\");\r",
+							"var username = pm.environment.get(\"username\");\r",
+							"var password = pm.environment.get(\"password\");\r",
+							"\r",
+							"pm.sendRequest({\r",
+							"    url: protocol + '://' + keycloak_host + '/auth/realms/' + keycloak_realm + '/protocol/openid-connect/token',\r",
+							"    method: 'POST',\r",
+							"    header: {\r",
+							"        'Content-Type': 'application/x-www-form-urlencoded',\r",
+							"    },\r",
+							"    body: {\r",
+							"        mode: 'urlencoded',\r",
+							"        urlencoded: [\r",
+							"            { key: \"client_id\", value: client_id },\r",
+							"            { key: \"username\", value: username },\r",
+							"            { key: \"password\", value: password },\r",
+							"            { key: \"grant_type\", value: \"password\" }\r",
+							"        ]\r",
+							"    }\r",
+							"}, function (err, response) {\r",
+							"    const jsonResponse = response.json();\r",
+							"    const keycloak_token = jsonResponse.access_token;\r",
+							"    pm.environment.set(\"keycloak_token\", keycloak_token );\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{keycloak_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "package",
+							"description": "solution package file to be upload",
+							"type": "file",
+							"src": []
+						},
+						{
+							"key": "packageVariable",
+							"type": "file",
+							"src": []
+						}
+					]
+				},
+				"url": {
+					"raw": "{{protocol}}://{{obmgr_host}}/tasks/deployment?overwrite=yes",
+					"protocol": "{{protocol}}",
+					"host": [
+						"{{obmgr_host}}"
+					],
+					"path": [
+						"tasks",
+						"deployment"
+					],
+					"query": [
+						{
+							"key": "overwrite",
+							"value": "yes"
+						}
+					]
+				},
+				"description": "func_onboard_api_06"
+			},
+			"response": []
+		},
+		{
+			"name": "Send order getTable",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var protocol = pm.environment.get(\"protocol\");\r",
+							"var keycloak_host = pm.environment.get(\"keycloak_host\");\r",
+							"var keycloak_realm = pm.environment.get(\"keycloak_realm\");\r",
+							"var client_id = pm.environment.get(\"client_id\");\r",
+							"var username = pm.environment.get(\"username\");\r",
+							"var password = pm.environment.get(\"password\");\r",
+							"\r",
+							"pm.sendRequest({\r",
+							"    url: protocol + '://' + keycloak_host + '/auth/realms/' + keycloak_realm + '/protocol/openid-connect/token',\r",
+							"    method: 'POST',\r",
+							"    header: {\r",
+							"        'Content-Type': 'application/x-www-form-urlencoded',\r",
+							"    },\r",
+							"    body: {\r",
+							"        mode: 'urlencoded',\r",
+							"        urlencoded: [\r",
+							"            { key: \"client_id\", value: client_id },\r",
+							"            { key: \"username\", value: username },\r",
+							"            { key: \"password\", value: password },\r",
+							"            { key: \"grant_type\", value: \"password\" }\r",
+							"        ]\r",
+							"    }\r",
+							"}, function (err, response) {\r",
+							"    const jsonResponse = response.json();\r",
+							"    const keycloak_token = jsonResponse.access_token;\r",
+							"    pm.environment.set(\"keycloak_token\", keycloak_token );\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let r = pm.response.json();\r",
+							"pm.environment.set(\"order_id\", r.id);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{keycloak_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"orderItemMap\": {\r\n        \"sample_getTable\": {\r\n            \"operation\": \"getTable\",\r\n            \"specification\": {\r\n                \"name\": \"sample-test\",\r\n                \"version\": \"1.0.0-SNAPSHOT\"\r\n            },\r\n            \"parameters\": {\r\n                \"table\": \"test\"\r\n            }        \r\n        }\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{protocol}}://{{host}}/apigw/{{dos_noc_namespace}}/ordermanagement/api/v1/orders",
+					"protocol": "{{protocol}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"apigw",
+						"{{dos_noc_namespace}}",
+						"ordermanagement",
+						"api",
+						"v1",
+						"orders"
+					]
+				},
+				"description": "To ensure the order created successfully with the operation, getTable.\r\nThe response returned a list of keys for the lookup table"
+			},
+			"response": []
+		},
+		{
+			"name": "Check order",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var protocol = pm.environment.get(\"protocol\");\r",
+							"var keycloak_host = pm.environment.get(\"keycloak_host\");\r",
+							"var keycloak_realm = pm.environment.get(\"keycloak_realm\");\r",
+							"var client_id = pm.environment.get(\"client_id\");\r",
+							"var username = pm.environment.get(\"username\");\r",
+							"var password = pm.environment.get(\"password\");\r",
+							"\r",
+							"pm.sendRequest({\r",
+							"    url: protocol + '://' + keycloak_host + '/auth/realms/' + keycloak_realm + '/protocol/openid-connect/token',\r",
+							"    method: 'POST',\r",
+							"    header: {\r",
+							"        'Content-Type': 'application/x-www-form-urlencoded',\r",
+							"    },\r",
+							"    body: {\r",
+							"        mode: 'urlencoded',\r",
+							"        urlencoded: [\r",
+							"            { key: \"client_id\", value: client_id },\r",
+							"            { key: \"username\", value: username },\r",
+							"            { key: \"password\", value: password },\r",
+							"            { key: \"grant_type\", value: \"password\" }\r",
+							"        ]\r",
+							"    }\r",
+							"}, function (err, response) {\r",
+							"    const jsonResponse = response.json();\r",
+							"    const keycloak_token = jsonResponse.access_token;\r",
+							"    pm.environment.set(\"keycloak_token\", keycloak_token );\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{keycloak_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "Bearer {{token}}"
+					}
+				],
+				"url": {
+					"raw": "{{protocol}}://{{host}}/apigw/{{dos_noc_namespace}}/ordermanagement/api/v1/orders/{{order_id}}",
+					"protocol": "{{protocol}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"apigw",
+						"{{dos_noc_namespace}}",
+						"ordermanagement",
+						"api",
+						"v1",
+						"orders",
+						"{{order_id}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

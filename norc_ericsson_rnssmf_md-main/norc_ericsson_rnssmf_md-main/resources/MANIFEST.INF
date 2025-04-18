@@ -1,0 +1,13 @@
+name: @PACKAGE_NAME@
+
+version: @PACKAGE_VERSION@
+
+include_files:
+
+exclude_files:
+ - ericsson-nssmf_env.json
+ 
+validation:
+  refs:
+    exclude:
+    

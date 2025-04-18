@@ -1,0 +1,13 @@
+{
+	"parentObjectRef": "networkElement/GenericTypeDriver/neInterface",
+	"name": "ericsson-nssmf-interface",
+	"serviceState": "InService",
+	"neInterfaceType": {
+		"name": "ericsson-nssmf-interface-type",
+		"version": "1",
+		"networkElementType": {
+			"name": "GenericTypeDriver_Type",
+			"version": "1"
+		}
+	}
+}

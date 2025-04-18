@@ -1,0 +1,10 @@
+{
+  "name": "ericsson-nssmf-type",
+  "version": "1",
+  "neInterfaceType": [
+    {
+      "name": "REST",
+      "version": "1"
+    }
+  ]
+}
